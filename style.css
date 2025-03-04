@@ -1,0 +1,739 @@
+/* Reset & Scrollbar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #222;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #777;
+  }
+  
+  /* Base & Body */
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+  body {
+    background: #000;
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    transition: background 0.3s, color 0.3s;
+  }
+  .light-theme {
+    background: #fff;
+    color: #000;
+  }
+  
+  /* Background Blobs */
+  .blobs-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+  }
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    transition: all 4s ease-in-out;
+    filter: blur(80px);
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    position: relative;
+    width: 60px;
+    background-color: rgba(255,255,255,0.07);
+    padding: 1rem;
+    flex-shrink: 0;
+    transition: width 0.3s ease;
+  }
+  .sidebar.expanded {
+    width: 200px;
+  }
+  .expand-sidebar-btn {
+    position: absolute;
+    top: 1rem;
+    left: 0;
+    width: 60px;
+    text-align: center;
+    font-size: 1.5rem;
+    color: #bbb;
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .sidebar-separator {
+    margin-top: 4rem;
+    width: 100%;
+    border: 0;
+    height: 1px;
+    background: #555;
+    margin-bottom: 1rem;
+  }
+  .sidebar-icons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .sidebar-icons button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 1.2rem;
+    background: none;
+    border: none;
+    color: #bbb;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .sidebar-icons button .label {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    margin-left: 0.5rem;
+    white-space: nowrap;
+  }
+  .sidebar.expanded .sidebar-icons button .label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  /* MAIN CONTENT */
+  .main-content {
+    flex: 1;
+    width: calc(100% - 60px);
+    margin: 0 auto;
+    padding: 3rem 1rem 300px;  /* extra bottom padding */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  /* Clicker Container */
+  .clicker-container {
+    text-align: center;
+    margin: 20vh auto 2rem;
+    min-height: 200px;
+    position: relative;
+  }
+  .pancakes-counter {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  #pps-display {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  #clicker-btn {
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    border: none;
+    color: inherit;
+    padding: 2rem 3rem;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+  #clicker-btn:hover {
+    transform: scale(1.05) rotate(1deg);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+  }
+  #clicker-btn.golden {
+    background: linear-gradient(135deg, gold, orange);
+    box-shadow: 0 0 20px gold;
+  }
+  
+  /* Floating Gain Text */
+  .floating-gain {
+    position: absolute;
+    font-size: 1.2rem;
+    color: #0f0;
+    animation: floatUp 1s ease-out forwards;
+  }
+  @keyframes floatUp {
+    0% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-30px); }
+  }
+  
+  /* Instant Upgrades Area */
+  .instant-upgrades-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem auto 2rem;
+    overflow: visible;
+  }
+  
+  /* Permanent Upgrades Area (fixed at bottom center) */
+  .permanent-upgrades-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1rem;
+    z-index: 15;
+  }
+  
+  /* Upgrade Card Styling */
+  .upgrade-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    width: 150px;
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, opacity 0.5s ease;
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  .upgrade-card.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .upgrade-card.purchased {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-100%);
+  }
+  .upgrade-card:hover {
+    transform: scale(1.05) rotate(1deg);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+  }
+  
+  /* Upgrade Icon */
+  .upgrade-icon {
+    font-size: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  
+  /* Upgrade Info */
+  .upgrade-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .upgrade-card:hover .upgrade-info {
+    opacity: 1;
+  }
+  
+  /* Theme Toggle */
+  .theme-toggle-container {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    z-index: 10;
+  }
+  
+  /* Switch Styling */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  .switch input { display: none; }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+  
+  /* Active Effects */
+  .active-effects {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .active-effect {
+    font-size: 2rem;
+  }
+  
+  /* Production Indicators */
+  .production-indicators {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  /* Bouncy Emoji */
+  .bouncy-emoji {
+    position: fixed;
+    font-size: 2rem;
+    pointer-events: none;
+  }
+  
+  /* Falling Emoji */
+  .falling-emoji {
+    position: fixed;
+    font-size: 2rem;
+    cursor: pointer;
+  }
+  
+  /* Responsive *//* Reset & Scrollbar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #222;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* Base & Body */
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+body {
+    background: #000;
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    transition: background 0.3s, color 0.3s;
+}
+.light-theme {
+    background: #fff;
+    color: #000;
+}
+
+/* Background Blobs */
+.blobs-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    transition: all 4s ease-in-out;
+    filter: blur(80px);
+}
+
+/* Sidebar */
+.sidebar {
+    position: relative;
+    width: 60px;
+    background-color: rgba(255,255,255,0.07);
+    padding: 1rem;
+    flex-shrink: 0;
+    transition: width 0.3s ease;
+}
+.sidebar.expanded {
+    width: 200px;
+}
+.expand-sidebar-btn {
+    position: absolute;
+    top: 1rem;
+    left: 0;
+    width: 60px;
+    text-align: center;
+    font-size: 1.5rem;
+    color: #bbb;
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+}
+.sidebar-separator {
+    margin-top: 4rem;
+    width: 100%;
+    border: 0;
+    height: 1px;
+    background: #555;
+    margin-bottom: 1rem;
+}
+.sidebar-icons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.sidebar-icons button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 1.2rem;
+    background: none;
+    border: none;
+    color: #bbb;
+    cursor: pointer;
+    line-height: 1;
+}
+.sidebar-icons button .label {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    margin-left: 0.5rem;
+    white-space: nowrap;
+}
+.sidebar.expanded .sidebar-icons button .label {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* MAIN CONTENT */
+.main-content {
+    flex: 1;
+    width: calc(100% - 60px);
+    margin: 0 auto;
+    padding: 3rem 1rem 300px;  /* extra bottom padding */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Clicker Container */
+.clicker-container {
+    text-align: center;
+    margin: 20vh auto 2rem;
+    min-height: 200px;
+    position: relative;
+}
+.pancakes-counter {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+#pps-display {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+#clicker-btn {
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    border: none;
+    color: inherit;
+    padding: 2rem 3rem;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+#clicker-btn:hover {
+    transform: scale(1.05) rotate(1deg);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+}
+#clicker-btn.golden {
+    background: linear-gradient(135deg, gold, orange);
+    box-shadow: 0 0 20px gold;
+}
+
+/* Floating Gain Text */
+.floating-gain {
+    position: absolute;
+    font-size: 1.2rem;
+    color: #0f0;
+    animation: floatUp 1s ease-out forwards;
+}
+@keyframes floatUp {
+    0% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-30px); }
+}
+
+/* Instant Upgrades Area */
+.instant-upgrades-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem auto 2rem;
+    overflow: visible;
+}
+
+/* Permanent Upgrades Area (fixed at bottom center) */
+.permanent-upgrades-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1rem;
+    z-index: 15;
+}
+
+/* Upgrade Card Styling */
+.upgrade-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    width: 150px;
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, opacity 0.5s ease;
+    opacity: 0;
+    transform: translateX(100%);
+}
+.upgrade-card.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+.upgrade-card.purchased {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-100%);
+}
+.upgrade-card:hover {
+    transform: scale(1.05) rotate(1deg);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+}
+
+/* Upgrade Icon */
+.upgrade-icon {
+    font-size: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+/* Upgrade Info */
+.upgrade-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.upgrade-card:hover .upgrade-info {
+    opacity: 1;
+}
+
+/* Theme Toggle */
+.theme-toggle-container {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    z-index: 10;
+}
+
+/* Switch Styling */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+.switch input { display: none; }
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+input:checked + .slider {
+    background-color: #2196F3;
+}
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Active Effects */
+.active-effects {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.active-effect {
+    font-size: 2rem;
+}
+
+/* Production Indicators */
+.production-indicators {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Bouncy Emoji */
+.bouncy-emoji {
+    position: fixed;
+    font-size: 2rem;
+    pointer-events: none;
+}
+
+/* Falling Emoji */
+.falling-emoji {
+    position: fixed;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body { flex-direction: column; }
+    .sidebar {
+      position: relative;
+      width: 100%;
+      height: 60px;
+      padding: 0.5rem;
+      flex-direction: row;
+    }
+    .sidebar.expanded {
+      height: auto;
+      flex-direction: column;
+    }
+    .expand-sidebar-btn { position: static; width: auto; text-align: center; }
+    .sidebar-separator { margin-top: 0; width: 100%; }
+    .sidebar-icons button { justify-content: flex-start; }
+    .main-content { width: 100%; padding-top: 1rem; }
+    .pancakes-counter { font-size: 1.3rem; }
+    #pps-display { font-size: 1.1rem; }
+    #clicker-btn { font-size: 1.5rem; padding: 1.5rem 2rem; }
+    .upgrade-card { width: 120px; height: 120px; }
+    .upgrade-icon { font-size: 2.5rem; }
+}
+
+/* Spin Animation for Pinwheel */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+  @media (max-width: 768px) {
+    body { flex-direction: column; }
+    .sidebar {
+      position: relative;
+      width: 100%;
+      height: 60px;
+      padding: 0.5rem;
+      flex-direction: row;
+    }
+    .sidebar.expanded {
+      height: auto;
+      flex-direction: column;
+    }
+    .expand-sidebar-btn { position: static; width: auto; text-align: center; }
+    .sidebar-separator { margin-top: 0; width: 100%; }
+    .sidebar-icons button { justify-content: flex-start; }
+    .main-content { width: 100%; padding-top: 1rem; }
+    .pancakes-counter { font-size: 1.3rem; }
+    #pps-display { font-size: 1.1rem; }
+    #clicker-btn { font-size: 1.5rem; padding: 1.5rem 2rem; }
+    .upgrade-card { width: 120px; height: 120px; }
+    .upgrade-icon { font-size: 2.5rem; }
+  }
+  
+  /* Spin Animation for Pinwheel */
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  

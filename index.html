@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clicker Upgrade Game</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Sidebar (fixed so main content isn’t shifted) -->
+  <div class="sidebar">
+    <button class="expand-sidebar-btn">☰</button>
+    <hr class="sidebar-separator">
+    <div class="sidebar-icons">
+      <button onclick="window.location.reload()">
+        <span class="icon">🏠</span>
+        <span class="label">Home</span>
+      </button>
+      <button onclick="window.location.href='https://troaphdev.github.io/worldnews'">
+        <span class="icon">📰</span>
+        <span class="label">World News</span>
+      </button>
+      <button onclick="window.location.href='https://troaphdev.github.io/code-playground'">
+        <span class="icon">💻</span>
+        <span class="label">Playground</span>
+      </button>
+      <!-- New Sidebar Button for Pancake Clicker -->
+      <button onclick="window.location.href='https://troaphdev.github.io/pancake-clicker'">
+        <span class="icon">🥞</span>
+        <span class="label">Pancake Clicker</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content (not affected by sidebar) -->
+  <div class="main-content">
+    <!-- Clicker Container (absolutely centered) -->
+    <div class="clicker-container">
+      <p class="pancakes-counter">Pancakes: <span id="pancakes">0</span></p>
+      <p id="pps-display">PPS: 0/s | Total: 0/s</p>
+      <button id="clicker-btn">🥞</button>
+    </div>
+
+    <!-- Discreet Theme Toggle -->
+    <div id="theme-toggle-container" class="theme-toggle-container" style="display: none;">
+      <label class="switch">
+         <input type="checkbox" id="theme-toggle">
+         <span class="slider round"></span>
+      </label>
+    </div>
+
+    <!-- Instant Upgrades Area (horizontally scrollable without visible scrollbar) -->
+    <div id="instant-upgrades-container" class="instant-upgrades-container">
+      <!-- Upgrade cards injected here -->
+    </div>
+  </div>
+
+  <!-- Permanent Upgrades Area (fixed at bottom center) -->
+  <div id="permanent-upgrades-container" class="permanent-upgrades-container">
+    <!-- Permanent upgrade cards injected here -->
+  </div>
+
+  <!-- Active Effects (permanent visuals) -->
+  <div id="active-effects" class="active-effects"></div>
+
+  <!-- Production Indicators -->
+  <div id="production-indicators" class="production-indicators"></div>
+
+  <!-- Hidden Background Music -->
+  <audio id="background-music" loop style="display: none;">
+    <source src="your-music-file.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- Background Blobs -->
+  <div class="blobs-container"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
